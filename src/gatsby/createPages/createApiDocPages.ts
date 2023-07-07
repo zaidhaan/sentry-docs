@@ -27,6 +27,7 @@ export const createApiDocPages = async ({actions, graphql, reporter}: CreatePage
       path: `/api/${node.name.toLowerCase()}/`,
       component,
       context: {
+        pageType: 'apiDoc',
         title: name,
         tag: node.name,
       },

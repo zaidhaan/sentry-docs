@@ -65,6 +65,7 @@ export const createInternalDocPages = async ({
         path: child.fields.slug,
         component,
         context: {
+          pageType: 'internalDoc',
           excerpt: child.excerpt,
           ...child.frontmatter,
           id: node.id,

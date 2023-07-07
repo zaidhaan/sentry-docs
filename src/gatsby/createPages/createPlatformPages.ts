@@ -242,6 +242,7 @@ export const createPlatformPages = async ({
       path,
       component,
       context: {
+        pageType: 'platform',
         excerpt: child.excerpt,
         ...Object.fromEntries(
           Object.entries(child.frontmatter).filter(
@@ -464,6 +465,7 @@ export const createPlatformPages = async ({
       path: '/platforms/',
       component: require.resolve(`../../templates/doc.tsx`),
       context: {
+        pageType: 'platformIndex',
         title: 'Platforms',
         ...getChild(indexPage).frontmatter,
         id: indexPage.id,

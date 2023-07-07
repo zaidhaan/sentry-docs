@@ -65,6 +65,7 @@ export const createApiReference = async ({
         path: `api${child.fields.slug}`,
         component,
         context: {
+          pageType: 'apiReference',
           excerpt: child.excerpt,
           ...child.frontmatter,
           id: node.id,

@@ -54,6 +54,7 @@ export const createWizardDebugPages = async ({
       path: `/_debug/wizard${child.fields.slug}`,
       component,
       context: {
+        pageType: 'wizardDebug',
         title: child.frontmatter.name,
         ...child.frontmatter,
         noindex: true,

@@ -63,6 +63,7 @@ export const createDocPages = async ({actions, graphql, reporter}: CreatePageArg
         path: child.fields.slug,
         component,
         context: {
+          pageType: 'genericDoc',
           excerpt: child.excerpt,
           ...child.frontmatter,
           id: node.id,
