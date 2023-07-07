@@ -29,6 +29,7 @@ export const createApiPages = async ({actions, graphql, reporter}: CreatePageArg
       path: `${node.path.readableUrl}`,
       component,
       context: {
+        pageType: 'api',
         id: node.id,
         title: node.path.operationId,
         notoc: true,
