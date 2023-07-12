@@ -56,7 +56,17 @@ export function makeFetchCache<DataType>({dataUrl, name}: Options) {
         // eslint-disable-next-line no-console
         console.log(`Fetching registry ${name} (${dataUrl})`);
         const result = await fetchRetry(dataUrl, {retry: 5});
+<<<<<<< Updated upstream
         data = await result?.json();
+=======
+
+        if (!result || result?.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        data = await result.json();
+
+>>>>>>> Stashed changes
         // eslint-disable-next-line no-console
         console.log(`Got data for registry ${name} (${dataUrl})`);
       } catch (err) {
@@ -64,7 +74,14 @@ export function makeFetchCache<DataType>({dataUrl, name}: Options) {
         console.error(`Unable to fetch for ${name}: ${err.message}`);
         data = null;
 
+<<<<<<< Updated upstream
         // throw err;
+=======
+        // Hard fail in production. Allow builds in development when offline
+        if (process.env.NODE_ENV === 'production') {
+          throw err;
+        }
+>>>>>>> Stashed changes
       }
 
       activeFetch = null;

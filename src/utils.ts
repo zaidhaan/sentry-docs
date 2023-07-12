@@ -54,23 +54,32 @@ type Page = {
   };
 };
 
-export const sortPages = (arr: any, extractor: (any) => Page = n => n): any[] => {
+export function sortPages<A>(arr: A[], extractor: (v: A) => Page): A[] {
   return arr.sort((a, b) => {
-    a = extractor(a);
-    b = extractor(b);
-    const aso = a.context.sidebar_order >= 0 ? a.context.sidebar_order : 10;
-    const bso = b.context.sidebar_order >= 0 ? b.context.sidebar_order : 10;
+    const pageA = extractor(a);
+    const pageB = extractor(b);
+
+    const aso =
+      pageA.context.sidebar_order && pageA.context.sidebar_order >= 0
+        ? pageA.context.sidebar_order
+        : 10;
+    const bso =
+      pageB.context.sidebar_order && pageB.context.sidebar_order >= 0
+        ? pageB.context.sidebar_order
+        : 10;
+
     if (aso > bso) {
       return 1;
     }
     if (bso > aso) {
       return -1;
     }
-    return (a.context.sidebar_title || a.context.title).localeCompare(
-      b.context.sidebar_title || b.context.title
-    );
+    const pageATitle = pageA.context.sidebar_title ?? pageA.context.title;
+    const pageBTitle = pageB.context.sidebar_title ?? pageB.context.title;
+
+    return pageATitle?.localeCompare(pageBTitle ?? '') ?? 0;
   });
-};
+}
 
 type URLQueryObject = {
   [key: string]: string;
@@ -95,8 +104,12 @@ export const marketingUrlParams = (): URLQueryObject => {
 
 export function getCurrentTransaction(): Transaction | undefined {
   try {
-    // getCurrentHub() can actually return undefined, as we are using the Loader Script
-    // so we guard defensively against all of these existing.
+    // getCurrentHub() can actually return undefined, as we are using the
+    // Loader Script so we guard defensively against all of these existing.
+    //
+    // TODO(epurkhiser): We should define Sentry on the global window object if
+    // we're going to do this
+    // @ts-expect-error
     return window.Sentry.getCurrentHub().getScope().getTransaction();
   } catch {
     return undefined;
@@ -105,8 +118,12 @@ export function getCurrentTransaction(): Transaction | undefined {
 
 export function captureException(exception: unknown): void {
   try {
-    // Sentry may not be available, as we are using the Loader Script
-    // so we guard defensively against all of these existing.
+    // Sentry may not be available, as we are using the Loader Script so we
+    // guard defensively against all of these existing.
+    //
+    // TODO(epurkhiser): We should define Sentry on the global window object if
+    // we're going to do this
+    // @ts-expect-error
     window.Sentry.captureException(exception);
   } catch {
     // ignore

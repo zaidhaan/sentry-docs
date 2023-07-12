@@ -185,7 +185,7 @@ export const getPlatformsWithFallback = (
  * want to pass `defaultValue` with the effective platform to avoid fallbacks.
  */
 export function usePlatform(
-  value: string = null,
+  value: string | null = null,
   useStoredValue: boolean = true,
   useDefault: boolean = true,
   defaultValue: string = DEFAULT_PLATFORM

@@ -1,7 +1,5 @@
 export type RequestBodySchema = {
-  properties: {
-    [key: string]: {description: string; type: string};
-  };
+  properties: Record<string, {description: string; type: string}>;
   required: string[];
   type: string;
 };
@@ -34,34 +32,38 @@ type Tag = {
   name: string;
 };
 
+type OpenAPIResponse = {
+  content: {
+    'application/json': {
+      example: any;
+      schema: any;
+    };
+  };
+  description: string;
+};
+
+type OpenAPIRequestBody = {
+  content: {
+    'application/json': {
+      example: any;
+      schema: RequestBodySchema;
+    };
+  };
+  required: boolean;
+};
+
+type OpenAPIOperation = {
+  operationId: string;
+  parameters: Parameter[];
+  requestBody: OpenAPIRequestBody;
+  responses: Record<string, OpenAPIResponse>;
+  tags: string[];
+};
+
 export type DeRefedOpenAPI = {
   paths: {
-    [key: string]: {
-      [key: string]: {
-        operationId: string;
-        parameters: Parameter[];
-        requestBody: {
-          content: {
-            'application/json': {
-              example: any;
-              schema: RequestBodySchema;
-            };
-          };
-          required: boolean;
-        };
-        responses: {
-          [key: string]: {
-            content: {
-              'application/json': {
-                example: any;
-                schema: any;
-              };
-            };
-            description: string;
-          };
-        };
-        tags: string[];
-      };
+    [path: string]: {
+      [method: string]: OpenAPIOperation;
     };
   };
   tags: Tag[];

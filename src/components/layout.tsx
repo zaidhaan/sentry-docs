@@ -18,6 +18,7 @@ type Props = {
   sidebar: JSX.Element;
 };
 
+<<<<<<< Updated upstream
 export function Layout({children, sidebar, pageContext}: Props) {
   const searchPlatforms =
     pageContext.pageType === 'platform'
@@ -25,6 +26,12 @@ export function Layout({children, sidebar, pageContext}: Props) {
           (name): name is string => !!name
         )
       : [];
+=======
+export function Layout({children, sidebar, pageContext = {}}: Props) {
+  const searchPlatforms = [pageContext.platform?.name, pageContext.guide?.name].filter(
+    (name): name is string => !!name
+  );
+>>>>>>> Stashed changes
 
   return (
     <div className="document-wrapper">

@@ -24,8 +24,9 @@ function makeKeywordsClickable(children: React.ReactNode) {
       return arr;
     }
 
-    let match;
+    let match: RegExpExecArray | null = null;
     let lastIndex = 0;
+
     // eslint-disable-next-line no-cond-assign
     while ((match = KEYWORDS_REGEX.exec(child)) !== null) {
       const afterMatch = KEYWORDS_REGEX.lastIndex - match[0].length;
@@ -53,7 +54,7 @@ function makeKeywordsClickable(children: React.ReactNode) {
   }, []);
 }
 
-const getPortal = memoize((): HTMLElement => {
+const getPortal = memoize((): HTMLElement | null => {
   if (typeof document === 'undefined') {
     return null;
   }
@@ -77,8 +78,8 @@ function KeywordSelector({keyword, group, index}: KeywordSelectorProps) {
   const codeContext = useContext(CodeContext);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [referenceEl, setReferenceEl] = useState<HTMLSpanElement>(null);
-  const [dropdownEl, setDropdownEl] = useState<HTMLElement>(null);
+  const [referenceEl, setReferenceEl] = useState<HTMLSpanElement | null>(null);
+  const [dropdownEl, setDropdownEl] = useState<HTMLElement | null>(null);
 
   const {styles, state, attributes} = usePopper(referenceEl, dropdownEl, {
     placement: 'bottom',
@@ -98,8 +99,8 @@ function KeywordSelector({keyword, group, index}: KeywordSelectorProps) {
   });
 
   const [sharedSelection, setSharedSelection] = codeContext.sharedKeywordSelection;
+  const {codeKeywords} = codeContext;
 
-  const {codeKeywords} = useContext(CodeContext);
   const choices = codeKeywords?.[group] ?? [];
   const currentSelectionIdx = sharedSelection[group] ?? 0;
   const currentSelection = choices[currentSelectionIdx];
@@ -347,9 +348,13 @@ type Props = {
 
 export function CodeBlock({filename, language, children}: Props) {
   const [showCopied, setShowCopied] = useState(false);
-  const codeRef = useRef(null);
+  const codeRef = useRef<HTMLDivElement>(null);
 
   async function copyCode() {
+    if (!codeRef.current) {
+      return;
+    }
+
     let code = codeRef.current.innerText;
     // don't copy leading prompt for bash
     if (language === 'bash' || language === 'shell') {

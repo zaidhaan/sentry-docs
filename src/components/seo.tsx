@@ -16,12 +16,12 @@ const detailsQuery = graphql`
 `;
 
 type Props = {
-  title: string;
   description?: string;
   keywords?: string[];
   lang?: string;
   meta?: any[];
   noindex?: boolean;
+  title?: string;
 };
 
 type ChildProps = Props & {

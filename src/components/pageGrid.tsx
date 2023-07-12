@@ -38,14 +38,16 @@ export function PageGrid({nextPages = false, header, exclude}: Props) {
   const currentPath = location.pathname;
   const currentPathLen = currentPath.length;
 
-  let matches = sortPages(
+  // TODO(epurkhiser): The typings here need majorly cleaned up
+  let matches = sortPages<any>(
     data.allSitePage.nodes.filter(
       n =>
         n.context &&
         n.context.title &&
         n.path.indexOf(currentPath) === 0 &&
         n.path.slice(currentPathLen).split('/', 2)[1] === ''
-    )
+    ),
+    n => n
   );
 
   if (nextPages) {

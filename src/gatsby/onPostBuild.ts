@@ -10,12 +10,18 @@ import jsdom from 'jsdom';
 import PlatformRegistry from '../shared/platformRegistry';
 
 function rmDirSync(dirPath: string) {
+<<<<<<< Updated upstream
   let files: string[];
+=======
+  let files: string[] = [];
+
+>>>>>>> Stashed changes
   try {
     files = fs.readdirSync(dirPath);
   } catch (e) {
     return;
   }
+
   files.forEach(file => {
     const filePath = dirPath + '/' + file;
     if (fs.statSync(filePath).isFile()) {
@@ -24,8 +30,67 @@ function rmDirSync(dirPath: string) {
       rmDirSync(filePath);
     }
   });
+<<<<<<< Updated upstream
   fs.rmdirSync(dirPath);
 }
+=======
+
+  fs.rmdirSync(dirPath);
+}
+
+const onPostBuild: GatsbyNode['onPostBuild'] = async ({graphql}) => {
+  const source = 'wizard';
+  const output = `${__dirname}/../../public/_platforms`;
+
+  console.info(`Building wizard output from '${source}' source`);
+
+  // TODO(ts): It should be possible to generate proper types for the graphql
+  // result here
+  const results = await graphql<any>(
+    `
+      query wizardFiles($source: String!) {
+        allFile(filter: {sourceInstanceName: {eq: $source}}) {
+          edges {
+            node {
+              childMarkdownRemark {
+                html
+                fields {
+                  slug
+                }
+                frontmatter {
+                  name
+                  doc_link
+                  support_level
+                  type
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      source,
+    }
+  );
+
+  const platformRegistry = new PlatformRegistry();
+  await platformRegistry.init();
+
+  const nodes = results.data.allFile.edges.map(e => e.node.childMarkdownRemark);
+  if (!nodes.length) {
+    const msg = 'No platform data found for wizard!';
+    if (process.env.JEKYLL_ENABLE_PLATFORM_API !== 'false') {
+      throw new Error(msg);
+    }
+    // eslint-disable-next-line no-console
+    console.warn(msg);
+    return;
+  }
+
+  writeJson(output, nodes, platformRegistry);
+};
+>>>>>>> Stashed changes
 
 function parsePathSlug(slug: string) {
   if (
@@ -37,7 +102,7 @@ function parsePathSlug(slug: string) {
       /^\/(?<platform>[^/]+)\/(?<product>performance|replay|profiling)-onboarding\/(?<sub_platform>[^/]+)\/(?<step>[^/]+)\/$/
     );
 
-    if (!pathMatch) {
+    if (!pathMatch?.groups) {
       throw new Error(`Unable to parse onboarding path from slug: ${slug}`);
     }
 
@@ -59,7 +124,7 @@ function parsePathSlug(slug: string) {
       /^\/(?<platform>[^/]+)\/(?<sub_platform>[^/]+)\/(?<product>index|with-error-monitoring|with-error-monitoring-and-performance|with-error-monitoring-and-replay|with-error-monitoring-performance-and-replay)\/$/
     );
 
-    if (!pathMatch) {
+    if (!pathMatch?.groups) {
       throw new Error(`Unable to parse javascript doc paths from slug: ${slug}`);
     }
 

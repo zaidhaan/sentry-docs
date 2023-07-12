@@ -12,7 +12,9 @@ export const sourceNodes = async (
   pluginOptions
 ) => {
   const {createNode} = actions;
-  let content = null;
+
+  let content: string | null = null;
+
   try {
     content = await pluginOptions.resolve();
   } catch (error) {
@@ -23,16 +25,9 @@ export const sourceNodes = async (
   if (content === null) {
     return;
   }
-  try {
-    const parseContent = (): DeRefedOpenAPI => {
-      try {
-        return JSON.parse(content);
-      } catch (error) {
-        return content;
-      }
-    };
 
-    const parsedContent = parseContent();
+  try {
+    const parsedContent = JSON.parse(content) as DeRefedOpenAPI;
 
     parsedContent.tags.forEach(tag => {
       if (tag['x-display-description']) {
@@ -50,82 +45,87 @@ export const sourceNodes = async (
         });
       }
     });
-    const data: OpenApiPath[] =
-      parsedContent.paths &&
-      Object.keys(parsedContent.paths).reduce((acc, apiPath) => {
-        const result = Object.entries(parsedContent.paths[apiPath]).map(
-          ([method, rest]) => {
-            const methodPath = parsedContent.paths[apiPath][method];
 
-            const readableUrl =
-              `/api/` +
-              `${methodPath.tags[0]}/${methodPath.operationId}/`
-                .replace(/[^a-zA-Z0-9/ ]/g, '')
-                .trim()
-                .replace(/\s/g, '-')
-                .toLowerCase();
+    const allPaths = Object.keys(parsedContent.paths ?? {});
 
-            const responses: Response[] =
-              (methodPath.responses &&
-                Object.entries(methodPath.responses).map(
-                  ([status_code, responses_rest]) => ({
-                    ...responses_rest,
-                    content:
-                      (responses_rest.content &&
-                        Object.entries(responses_rest.content).reduce(
-                          (a, [content_type, content_values]) => {
-                            Object.entries(content_values).map(
-                              ([k, v]) => (a[k] = JSON.stringify(v, null, 2))
-                            );
-                            a.content_type = content_type;
-                            return a;
-                          },
-                          {} as ResponseContent
-                        )) ||
-                      null,
-                    status_code,
-                  })
-                )) ||
-              null;
+    const data = allPaths.reduce<OpenApiPath[]>((acc, apiPath) => {
+      const result = Object.entries(parsedContent.paths[apiPath]).map(
+        ([method, operation]) => {
+          const methodPath = parsedContent.paths[apiPath][method];
 
-            const requestBody =
-              (methodPath.requestBody && {
-                ...methodPath.requestBody,
-                content:
-                  (methodPath.requestBody.content &&
-                    Object.entries(methodPath.requestBody.content).reduce(
-                      (a, [content_type, content_values]) => {
-                        Object.entries(content_values).map(
-                          ([k, v]) => (a[k] = JSON.stringify(v, null, 2))
-                        );
-                        // @ts-ignore(evanpurkhiser): This seems wrong but I
-                        // don't really want to mess with it
-                        a.content_type = content_type;
-                        return a;
-                      },
-                      {} as RequestBody
-                    )) ||
-                  null,
-              }) ||
-              null;
+          const readableUrl =
+            `/api/` +
+            `${methodPath.tags[0]}/${methodPath.operationId}/`
+              .replace(/[^a-zA-Z0-9/ ]/g, '')
+              .trim()
+              .replace(/\s/g, '-')
+              .toLowerCase();
 
-            return {
-              ...rest,
-              method,
-              apiPath,
-              responses,
-              requestBody,
-              readableUrl,
-            };
-          }
-        );
+          const responses: Response[] =
+            (methodPath.responses &&
+              Object.entries(methodPath.responses).map(
+                ([status_code, responses_rest]) => ({
+                  ...responses_rest,
+                  content:
+                    (responses_rest.content &&
+                      Object.entries(responses_rest.content).reduce(
+                        (a, [content_type, content_values]) => {
+                          Object.entries(content_values).map(
+                            ([k, v]) => (a[k] = JSON.stringify(v, null, 2))
+                          );
+                          a.content_type = content_type;
+                          return a;
+                        },
+                        {} as ResponseContent
+                      )) ||
+                    null,
+                  status_code,
+                })
+              )) ||
+            null;
 
-        acc.push(...result);
-        return acc;
-      }, []);
+          const requestBody =
+            (methodPath.requestBody && {
+              ...methodPath.requestBody,
+              content:
+                (methodPath.requestBody.content &&
+                  Object.entries(methodPath.requestBody.content).reduce(
+                    (a, [content_type, content_values]) => {
+                      Object.entries(content_values).map(
+                        ([k, v]) => (a[k] = JSON.stringify(v, null, 2))
+                      );
+                      // @ts-ignore(evanpurkhiser): This seems wrong but I
+                      // don't really want to mess with it
+                      a.content_type = content_type;
+                      return a;
+                    },
+                    {} as RequestBody
+                  )) ||
+                null,
+            }) ||
+            null;
+
+          const path: OpenApiPath = {
+            ...operation,
+            method,
+            apiPath,
+            responses,
+            // @ts-ignore
+            requestBody,
+            readableUrl,
+          };
+
+          return path;
+        }
+      );
+
+      acc.push(...result);
+      return acc;
+    }, []);
 
     data.forEach(path => {
       const nodeContent = {...parsedContent, path};
+      // @ts-ignore
       delete nodeContent.paths;
 
       const apiNode = {
