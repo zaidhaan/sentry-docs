@@ -3,7 +3,7 @@
 
 import path from 'path';
 
-import {sentryWebpackPlugin} from '@sentry/webpack-plugin';
+// import {sentryWebpackPlugin} from '@sentry/webpack-plugin';
 import {GatsbyNode} from 'gatsby';
 
 const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({actions}) => {
@@ -18,12 +18,12 @@ const onCreateWebpackConfig: GatsbyNode['onCreateWebpackConfig'] = ({actions}) =
       },
     },
     plugins: [
-      sentryWebpackPlugin({
-        org: 'sentry',
-        project: 'docs',
-        authToken: process.env.SENTRY_WEBPACK_PLUGIN_AUTH_TOKEN,
-        sourcemaps: {assets: './public/**'},
-      }),
+      // sentryWebpackPlugin({
+      //   org: 'sentry',
+      //   project: 'docs',
+      //   authToken: process.env.SENTRY_WEBPACK_PLUGIN_AUTH_TOKEN,
+      //   sourcemaps: {assets: './public/**'},
+      // }),
     ],
   });
 };

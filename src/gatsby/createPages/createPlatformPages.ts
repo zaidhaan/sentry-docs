@@ -6,7 +6,8 @@ import nodePath from 'path';
 import {GatsbyNode, Node} from 'gatsby';
 import {createFilePath} from 'gatsby-source-filesystem';
 
-import PlatformRegistry, {Guide, Platform} from '../../shared/platformRegistry';
+import PlatformRegistry from '../../shared/platformRegistry';
+import {Platform, PlatformGuide} from '../../types';
 import {getChild, getDataOrPanic} from '../helpers';
 
 type CreatePageArgs = Parameters<GatsbyNode['createPages']>[0];
@@ -238,20 +239,25 @@ export const createPlatformPages = async ({
     context: {[key: string]: any}
   ) => {
     const child = getChild(node);
+
+    const frontmatterContext = Object.fromEntries(
+      Object.entries(child.frontmatter).filter(
+        ([, value]) => value !== undefined && value
+      )
+    );
+
+    const additionalContext = Object.fromEntries(
+      Object.entries(context).filter(([, value]) => value !== undefined && value)
+    );
+
     actions.createPage({
       path,
       component,
       context: {
         pageType: 'platform',
         excerpt: child.excerpt,
-        ...Object.fromEntries(
-          Object.entries(child.frontmatter).filter(
-            ([, value]) => value !== undefined && value
-          )
-        ),
-        ...Object.fromEntries(
-          Object.entries(context).filter(([, value]) => value !== undefined && value)
-        ),
+        ...frontmatterContext,
+        ...additionalContext,
         id: node.id,
       },
     });
@@ -363,7 +369,7 @@ export const createPlatformPages = async ({
   const createPlatformGuidePages = (
     platform: Platform,
     platformData,
-    guide: Guide,
+    guide: PlatformGuide,
     guideData,
     sharedCommon: FileNode[],
     sharedContext: {[key: string]: any}

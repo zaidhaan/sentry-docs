@@ -5,7 +5,6 @@ import {getCurrentTransaction} from '../utils';
 import {Banner} from './banner';
 import {CodeContext, useCodeContextState} from './codeContext';
 import {GitHubCTA} from './githubCta';
-import {Layout} from './layout';
 import {SEO} from './seo';
 import {TableOfContents} from './tableOfContents';
 
@@ -36,14 +35,12 @@ type Props = {
   };
   prependToc?: React.ReactNode;
   seoTitle?: string;
-  sidebar?: React.ReactNode;
 };
 
 export function BasePage({
   data: {file} = {},
   pageContext = {},
   seoTitle,
-  sidebar,
   children,
   prependToc,
 }: Props) {
@@ -60,9 +57,7 @@ export function BasePage({
   const pageDescription = description || (excerpt ? excerpt.slice(0, 160) : '');
 
   return (
-    // @ts-expect-error TODO(epurkhiser): Understand why these types are
-    // totally different
-    <Layout {...{sidebar, pageContext}}>
+    <Fragment>
       <SEO
         title={seoTitle || title}
         description={pageDescription}
@@ -103,6 +98,6 @@ export function BasePage({
           </div>
         )}
       </div>
-    </Layout>
+    </Fragment>
   );
 }

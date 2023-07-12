@@ -6,7 +6,6 @@ import 'prismjs/components/prism-json';
 import React, {Fragment, useEffect, useState} from 'react';
 import {graphql} from 'gatsby';
 
-import {ApiSidebar} from 'sentry-docs/components/apiSidebar';
 import {BasePage} from 'sentry-docs/components/basePage';
 import {Content} from 'sentry-docs/components/content';
 import {SmartLink} from 'sentry-docs/components/smartLink';
@@ -176,7 +175,7 @@ export default function ApiPage(props) {
     Prism.highlightAll();
   }, []);
   return (
-    <BasePage sidebar={<ApiSidebar />} {...props}>
+    <BasePage {...props}>
       <div className="row">
         <div className="col-12">
           <div className="api-block">

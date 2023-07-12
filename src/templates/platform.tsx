@@ -4,7 +4,6 @@ import {graphql} from 'gatsby';
 import {BasePage} from 'sentry-docs/components/basePage';
 import {Content} from 'sentry-docs/components/content';
 import {PlatformSdkDetail} from 'sentry-docs/components/platformSdkDetail';
-import {PlatformSidebar} from 'sentry-docs/components/platformSidebar';
 
 type Props = {
   data: {
@@ -30,21 +29,12 @@ export default function Platform(props: Props) {
   // X for Ruby
   // X for Rails
   const seoTitle =
-    props.pageContext.title ===
-    (props.pageContext.guide || props.pageContext.platform).title
-      ? props.pageContext.title
-      : `${props.pageContext.title} for ${
-          (props.pageContext.guide || props.pageContext.platform).title
-        }`;
+    pageContext.title === (pageContext.guide || pageContext.platform).title
+      ? pageContext.title
+      : `${pageContext.title} for ${(pageContext.guide || pageContext.platform).title}`;
+
   return (
-    <BasePage
-      {...props}
-      seoTitle={seoTitle}
-      prependToc={<PlatformSdkDetail />}
-      sidebar={
-        <PlatformSidebar platform={pageContext.platform} guide={pageContext.guide} />
-      }
-    >
+    <BasePage {...props} seoTitle={seoTitle} prependToc={<PlatformSdkDetail />}>
       <Content file={props.data.file} />
     </BasePage>
   );

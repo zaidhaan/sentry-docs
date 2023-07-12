@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {Children, useContext, useEffect, useRef, useState} from 'react';
 
 import {CodeContext} from './codeContext';
 
@@ -45,7 +45,7 @@ export function CodeTabs({children}: Props) {
   // The title is what we use for sorting and also for remembering the
   // selection.  If there is no title fall back to the title cased language
   // name (or override from `LANGUAGES`).
-  let possibleChoices = children.map(x => {
+  let possibleChoices = Children.map(children, x => {
     const {title, language} = x.props;
     return (
       title ||

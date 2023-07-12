@@ -8,6 +8,7 @@ import {SmartLink} from './smartLink';
 export function NavbarPlatformDropdown() {
   const platformList = usePlatformList();
   const [currentPlatform] = usePlatform(null, false, false);
+
   return (
     <NavDropdown
       title={

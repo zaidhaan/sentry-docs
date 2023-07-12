@@ -1,6 +1,8 @@
 import React from 'react';
 import {graphql, useStaticQuery} from 'gatsby';
 
+import {GuideMeta, PlatformMeta} from 'sentry-docs/types';
+
 import {DynamicNav, toTree} from './dynamicNav';
 
 const navQuery = graphql`
@@ -36,14 +38,8 @@ type Node = {
 };
 
 type Props = {
-  platform: {
-    name: string;
-    title: string;
-  };
-  guide?: {
-    name: string;
-    title: string;
-  };
+  platform: PlatformMeta;
+  guide?: GuideMeta;
 };
 
 type ChildProps = Props & {

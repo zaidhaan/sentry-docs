@@ -1,12 +1,14 @@
-import React from 'react';
 import {GatsbyBrowser} from 'gatsby';
 
-import PageContext from 'sentry-docs/components/pageContext';
+import {PageWrapper} from 'sentry-docs/components/pageWrapper';
+import {DocsPageContext} from 'sentry-docs/types';
 
-export const wrapPageElement: GatsbyBrowser['wrapPageElement'] = ({
-  element,
-  props: {pageContext},
-}) => <PageContext.Provider value={pageContext}>{element}</PageContext.Provider>;
+export const wrapPageElement: GatsbyBrowser<
+  unknown,
+  DocsPageContext
+>['wrapPageElement'] = ({element, props}) => (
+  <PageWrapper pageProps={props}>{element}</PageWrapper>
+);
 
 // Disable prefetching altogether so our bw is not destroyed.
 // If this turns out to hurt performance significantly, we can

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Nav} from 'react-bootstrap';
 
+import {DocsPageContext} from 'sentry-docs/types';
+
 import 'sentry-docs/css/screen.scss';
 
 import {Breadcrumbs} from './breadcrumbs';
@@ -8,28 +10,21 @@ import {Header} from './header';
 import {Navbar} from './navbar';
 import {NavbarPlatformDropdown} from './navbarPlatformDropdown';
 import {getSandboxURL, SandboxOnly} from './sandboxLink';
-import {Sidebar} from './sidebar';
 import {SmartLink} from './smartLink';
 
 type Props = {
   children: React.ReactNode;
-  pageContext?: {
-    guide?: {
-      [key: string]: any;
-      name?: string;
-    };
-    platform?: {
-      [key: string]: any;
-      name?: string;
-    };
-  };
-  sidebar?: React.ReactNode;
+  pageContext: DocsPageContext;
+  sidebar: JSX.Element;
 };
 
-export function Layout({children, sidebar, pageContext = {}}: Props) {
-  const searchPlatforms = [pageContext.platform?.name, pageContext.guide?.name].filter(
-    Boolean
-  );
+export function Layout({children, sidebar, pageContext}: Props) {
+  const searchPlatforms =
+    pageContext.pageType === 'platform'
+      ? [pageContext.platform.name, pageContext.guide?.name].filter(
+          (name): name is string => !!name
+        )
+      : [];
 
   return (
     <div className="document-wrapper">
@@ -41,7 +36,7 @@ export function Layout({children, sidebar, pageContext = {}}: Props) {
           id="sidebar"
         >
           <div className="toc">
-            <div className="text-white p-3">{sidebar ? sidebar : <Sidebar />}</div>
+            <div className="text-white p-3">{sidebar}</div>
           </div>
         </div>
         <div className="d-sm-none d-block" id="navbar-menu">
@@ -94,9 +89,7 @@ export function Layout({children, sidebar, pageContext = {}}: Props) {
         <div className="flex-grow-1">
           <div className="d-block navbar-right-half">
             <Navbar
-              {...(searchPlatforms.length > 0 && {
-                platforms: searchPlatforms,
-              })}
+              platforms={searchPlatforms.length > 0 ? searchPlatforms : undefined}
             />
           </div>
 

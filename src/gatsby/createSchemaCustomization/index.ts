@@ -61,8 +61,6 @@ const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
       path: String
       additional_properties: Boolean
     }
-
-
     `,
     schema.buildObjectType({
       name: 'Frontmatter',

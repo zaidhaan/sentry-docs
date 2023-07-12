@@ -1,10 +1,36 @@
 import React from 'react';
 
-import {formatCaseStyle, usePlatform} from './hooks/usePlatform';
+import {PlatformCaseStyle} from 'sentry-docs/types';
+
+import {usePlatform} from './hooks/usePlatform';
 
 type Props = {
   name: string;
   platform?: string;
+};
+
+export const formatCaseStyle = (
+  style: PlatformCaseStyle | undefined,
+  value: string
+): string => {
+  switch (style) {
+    case 'snake_case':
+      return value.replace(/-/g, '_');
+    case 'camelCase':
+      return value
+        .split(/-/g)
+        .map((val, idx) =>
+          idx === 0 ? val : val.charAt(0).toUpperCase() + val.substring(1)
+        )
+        .join('');
+    case 'PascalCase':
+      return value
+        .split(/-/g)
+        .map(val => val.charAt(0).toUpperCase() + val.substring(1))
+        .join('');
+    default:
+      return value;
+  }
 };
 
 export function PlatformIdentifier({name, platform}: Props) {

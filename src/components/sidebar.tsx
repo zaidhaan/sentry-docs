@@ -1,5 +1,5 @@
 import React from 'react';
-import {graphql, StaticQuery} from 'gatsby';
+import {graphql, useStaticQuery} from 'gatsby';
 
 import {DynamicNav, toTree} from './dynamicNav';
 import {SidebarLink} from './sidebarLink';
@@ -89,5 +89,7 @@ export function BaseSidebar({data}: ChildProps) {
 }
 
 export function Sidebar() {
-  return <StaticQuery query={navQuery} render={data => <BaseSidebar data={data} />} />;
+  const data = useStaticQuery(navQuery);
+
+  return <BaseSidebar data={data} />;
 }

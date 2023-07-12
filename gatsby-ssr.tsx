@@ -1,18 +1,18 @@
 /* eslint-env node */
 /* eslint import/no-nodejs-modules:0 */
 
-import React from 'react';
 import {GatsbySSR} from 'gatsby';
 
-import {PageContext} from 'sentry-docs/components/pageContext';
+import {PageWrapper} from 'sentry-docs/components/pageWrapper';
+import {DocsPageContext} from 'sentry-docs/types';
 
 const sentryEnvironment = process.env.GATSBY_ENV || process.env.NODE_ENV || 'development';
 const sentryLoaderUrl = process.env.SENTRY_LOADER_URL;
 
-export const wrapPageElement: GatsbySSR['wrapPageElement'] = ({
+export const wrapPageElement: GatsbySSR<unknown, DocsPageContext>['wrapPageElement'] = ({
   element,
-  props: {pageContext},
-}) => <PageContext.Provider value={pageContext}>{element}</PageContext.Provider>;
+  props,
+}) => <PageWrapper pageProps={props}>{element}</PageWrapper>;
 
 export const onPreRenderHTML: GatsbySSR['onPreRenderHTML'] = ({getHeadComponents}) => {
   if (process.env.NODE_ENV !== 'production') {

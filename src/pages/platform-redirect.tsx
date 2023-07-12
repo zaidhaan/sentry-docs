@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react';
+import {Fragment, useEffect} from 'react';
 import {useLocation} from '@reach/router';
 import {navigate} from 'gatsby';
 import {PlatformIcon} from 'platformicons';
 import {parse} from 'query-string';
 
 import {usePlatformList} from 'sentry-docs/components/hooks/usePlatform';
-import {Layout} from 'sentry-docs/components/layout';
 import {SmartLink} from 'sentry-docs/components/smartLink';
 
 type Props = {
@@ -16,7 +15,7 @@ function BasePlatformRedirect({path = '/'}: Props) {
   const platformList = usePlatformList();
 
   return (
-    <Layout>
+    <Fragment>
       <h1>Platform Specific Content</h1>
       <p>
         The page you are looking for is customized for each platform. Select your platform
@@ -38,7 +37,7 @@ function BasePlatformRedirect({path = '/'}: Props) {
           </li>
         ))}
       </ul>
-    </Layout>
+    </Fragment>
   );
 }
 

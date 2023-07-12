@@ -4,12 +4,13 @@
 
 import fs from 'fs';
 
+import {GatsbyNode} from 'gatsby';
 import jsdom from 'jsdom';
 
 import PlatformRegistry from '../shared/platformRegistry';
 
-const rmDirSync = (dirPath: string) => {
-  let files;
+function rmDirSync(dirPath: string) {
+  let files: string[];
   try {
     files = fs.readdirSync(dirPath);
   } catch (e) {
@@ -24,59 +25,9 @@ const rmDirSync = (dirPath: string) => {
     }
   });
   fs.rmdirSync(dirPath);
-};
-
-export default async function onPostBuild({graphql}) {
-  const source = 'wizard';
-  const output = `${__dirname}/../../public/_platforms`;
-
-  console.info(`Building wizard output from '${source}' source`);
-  const results = await graphql(
-    `
-      query wizardFiles($source: String!) {
-        allFile(filter: {sourceInstanceName: {eq: $source}}) {
-          edges {
-            node {
-              childMarkdownRemark {
-                html
-                fields {
-                  slug
-                }
-                frontmatter {
-                  name
-                  doc_link
-                  support_level
-                  type
-                }
-              }
-            }
-          }
-        }
-      }
-    `,
-    {
-      source,
-    }
-  );
-
-  const platformRegistry = new PlatformRegistry();
-  await platformRegistry.init();
-
-  const nodes = results.data.allFile.edges.map(e => e.node.childMarkdownRemark);
-  if (!nodes.length) {
-    const msg = 'No platform data found for wizard!';
-    if (process.env.JEKYLL_ENABLE_PLATFORM_API !== 'false') {
-      throw new Error(msg);
-    }
-    // eslint-disable-next-line no-console
-    console.warn(msg);
-    return;
-  }
-
-  await writeJson(output, nodes, platformRegistry);
 }
 
-const parsePathSlug = (slug: string) => {
+function parsePathSlug(slug: string) {
   if (
     slug.includes('/performance-onboarding/') ||
     slug.includes('/replay-onboarding/') ||
@@ -132,9 +83,9 @@ const parsePathSlug = (slug: string) => {
     platform: main,
     sub,
   };
-};
+}
 
-const writeJson = (path: string, nodes, platformRegistry: PlatformRegistry) => {
+function writeJson(path: string, nodes, platformRegistry: PlatformRegistry) {
   const platforms = [];
   const indexJson = {};
   nodes.forEach(node => {
@@ -197,9 +148,9 @@ const writeJson = (path: string, nodes, platformRegistry: PlatformRegistry) => {
     writeNode(`${path}/${data.details}`, data);
   });
   console.log(`Wizard recorded ${nodes.length} platform snippets`);
-};
+}
 
-const writeNode = (path: string, data) => {
+function writeNode(path: string, data) {
   const dom = new jsdom.JSDOM(data.node.html);
   // remove anchor svgs
   dom.window.document.querySelectorAll('a.anchor svg').forEach(node => {
@@ -231,4 +182,58 @@ const writeNode = (path: string, data) => {
   };
 
   fs.writeFileSync(path, JSON.stringify(output));
+}
+
+const onPostBuild: GatsbyNode['onPostBuild'] = async ({graphql}) => {
+  const source = 'wizard';
+  const output = `${__dirname}/../../public/_platforms`;
+
+  console.info(`Building wizard output from '${source}' source`);
+
+  // TODO(epurkhiser): This can use an improved type
+  const results = await graphql<any>(
+    `
+      query wizardFiles($source: String!) {
+        allFile(filter: {sourceInstanceName: {eq: $source}}) {
+          edges {
+            node {
+              childMarkdownRemark {
+                html
+                fields {
+                  slug
+                }
+                frontmatter {
+                  name
+                  doc_link
+                  support_level
+                  type
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      source,
+    }
+  );
+
+  const platformRegistry = new PlatformRegistry();
+  await platformRegistry.init();
+
+  const nodes = results.data.allFile.edges.map(e => e.node.childMarkdownRemark);
+  if (!nodes.length) {
+    const msg = 'No platform data found for wizard!';
+    if (process.env.JEKYLL_ENABLE_PLATFORM_API !== 'false') {
+      throw new Error(msg);
+    }
+    // eslint-disable-next-line no-console
+    console.warn(msg);
+    return;
+  }
+
+  writeJson(output, nodes, platformRegistry);
 };
+
+export default onPostBuild;

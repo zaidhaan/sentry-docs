@@ -64,7 +64,7 @@ export function makeFetchCache<DataType>({dataUrl, name}: Options) {
         console.error(`Unable to fetch for ${name}: ${err.message}`);
         data = null;
 
-        throw err;
+        // throw err;
       }
 
       activeFetch = null;
