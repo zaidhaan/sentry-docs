@@ -290,6 +290,8 @@ export default function ApiPage(props) {
   );
 }
 
+export {BaseHead as Head} from '~src/components/head';
+
 export const pageQuery = graphql`
   query OpenApiQuery($id: String) {
     openApi(id: {eq: $id}) {

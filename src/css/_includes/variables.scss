@@ -10,6 +10,7 @@
 // A range of warm tones.
 
 $flame0: #df5128; // ^ Red-orange
+<<<<<<< Updated upstream
 $flame1: #e55e32; // |
 $flame2: #ea6b3c; // |
 $flame3: #ef7846; // |
@@ -18,6 +19,11 @@ $flame5: #f79a4f; // |
 $flame6: #faaf4e; // | Orange
 $flame7: #edcf9e; // | Desat Orange
 $flame8: #ffefae; // v Desat Yellow
+=======
+$flame3: #ef7846; // |
+$flame4: #f4834f; // |
+$flame6: #faaf4e; // | Orange
+>>>>>>> Stashed changes
 
 // A range of desaturated purples
 
@@ -26,7 +32,10 @@ $desatPurple1: #231c3d; // |
 $desatPurple2: #362d59; // |
 $desatPurple3: #473a67; // |
 $desatPurple4: #584774; // |
+<<<<<<< Updated upstream
 $desatPurple5: #64517d; // |
+=======
+>>>>>>> Stashed changes
 $desatPurple6: #79628c; // |
 $desatPurple7: #846e95; // |
 $desatPurple8: #9481a4; // |
@@ -74,4 +83,48 @@ $headerHeight: 4rem;
 :root {
   --light-text: #{$lightText};
   --lightest-purple-background: #{$lightestPurpleBackground};
+
+  --flame0: #{$flame0};
+  --flame3: #{$flame3};
+  --flame4: #{$flame4};
+  --flame6: #{$flame6};
+
+  --desatPurple0: #{$desatPurple0};
+  --desatPurple1: #{$desatPurple1};
+  --desatPurple2: #{$desatPurple2};
+  --desatPurple3: #{$desatPurple3};
+  --desatPurple4: #{$desatPurple4};
+  --desatPurple6: #{$desatPurple6};
+  --desatPurple7: #{$desatPurple7};
+  --desatPurple8: #{$desatPurple8};
+  --desatPurple9: #{$desatPurple9};
+  --desatPurple10: #{$desatPurple10};
+  --desatPurple11: #{$desatPurple11};
+  --desatPurple12: #{$desatPurple12};
+  --desatPurple13: #{$desatPurple13};
+  --desatPurple14: #{$desatPurple14};
+  --desatPurple15: #{$desatPurple15};
+
+  --brandPink: #{$brandPink};
+  --brandLink: #{$brandLink};
+  --darkPink: #{$darkPink};
+  --codeColor: #{$codeColor};
+  --brandDecoration: #{$brandDecoration};
+
+  --jewel0: #{$jewel0};
+  --jewel1: #{$jewel1};
+  --lightBlue: #{$lightBlue};
+
+  --white: #{$white};
+  --lightText: #{$lightText};
+  --highlightPurple: #{$highlightPurple};
+  --lightPurple: #{$lightPurple};
+  --lightestPurple: #{$lightestPurple};
+  --mediumPurple: #{$mediumPurple};
+  --darkestPurple: #{$darkestPurple};
+  --darkPurple: #{$darkPurple};
+  --boldRed: #{$boldRed};
+  --textDecorationPurple: #{$textDecorationPurple};
+  --lightestPurpleBackground: #{$lightestPurpleBackground};
+  --successGreen: #{$successGreen};
 }

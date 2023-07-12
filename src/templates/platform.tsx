@@ -24,6 +24,7 @@ type Props = {
 
 export default function Platform(props: Props) {
   const {pageContext} = props;
+<<<<<<< Updated upstream
   // Ruby
   // Rails
   // X for Ruby
@@ -35,10 +36,22 @@ export default function Platform(props: Props) {
 
   return (
     <BasePage {...props} seoTitle={seoTitle} prependToc={<PlatformSdkDetail />}>
+=======
+  return (
+    <BasePage
+      {...props}
+      prependToc={<PlatformSdkDetail />}
+      sidebar={
+        <PlatformSidebar platform={pageContext.platform} guide={pageContext.guide} />
+      }
+    >
+>>>>>>> Stashed changes
       <Content file={props.data.file} />
     </BasePage>
   );
 }
+
+export {BaseHead as Head} from '~src/components/head';
 
 export const pageQuery = graphql`
   query PlatformPageQuery($id: String) {

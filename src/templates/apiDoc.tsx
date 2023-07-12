@@ -30,6 +30,8 @@ export default function ApiDoc(props) {
   );
 }
 
+export {BaseHead as Head} from '~src/components/head';
+
 export const pageQuery = graphql`
   query OpenApiDocQuery($tag: [String]) {
     allOpenApi(filter: {path: {tags: {in: $tag}}}, sort: {fields: path___operationId}) {

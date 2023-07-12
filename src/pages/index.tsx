@@ -12,7 +12,18 @@ import {SmartLink} from 'sentry-docs/components/smartLink';
 import SentryWordmarkSVG from 'sentry-docs/logos/sentry-wordmark-dark.svg';
 import {Platform, PlatformGuide} from 'sentry-docs/types';
 
+<<<<<<< Updated upstream
 import 'sentry-docs/css/screen.scss';
+=======
+import Banner from '../components/banner';
+import {usePlatformList} from '../components/hooks/usePlatform';
+import NavbarPlatformDropdown from '../components/navbarPlatformDropdown';
+import Search from '../components/search';
+import SmartLink from '../components/smartLink';
+import SentryWordmarkSVG from '../logos/sentry-wordmark-dark.svg';
+
+import {getSandboxURL, SandboxOnly} from '~src/components/sandboxLink';
+>>>>>>> Stashed changes
 
 const HIGHLIGHTED_PLATFORMS = [
   'javascript',
@@ -59,7 +70,6 @@ function IndexPage() {
 
   return (
     <div className="index-wrapper">
-      <SEO title="Sentry Documentation" />
       <div className="hero-section">
         <div className="index-container">
           <div className="index-navbar">
@@ -219,5 +229,7 @@ function IndexPage() {
 export const frontmatter = {
   title: 'Sentry Documentation',
 };
+
+export {BaseHead as Head} from '~src/components/head';
 
 export default IndexPage;

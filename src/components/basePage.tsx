@@ -1,6 +1,14 @@
 import React, {Fragment, useState} from 'react';
 
+<<<<<<< Updated upstream
 import {getCurrentTransaction} from '../utils';
+=======
+import Banner from './banner';
+import CodeContext, {useCodeContextState} from './codeContext';
+import Layout from './layout';
+import SmartLink from './smartLink';
+import TableOfContents from './tableOfContents';
+>>>>>>> Stashed changes
 
 import {Banner} from './banner';
 import {CodeContext, useCodeContextState} from './codeContext';
@@ -33,14 +41,23 @@ type Props = {
     notoc?: boolean;
     title?: string;
   };
+<<<<<<< Updated upstream
   prependToc?: React.ReactNode;
   seoTitle?: string;
+=======
+  prependToc?: JSX.Element;
+  sidebar?: JSX.Element;
+>>>>>>> Stashed changes
 };
 
 export function BasePage({
   data: {file} = {},
   pageContext = {},
+<<<<<<< Updated upstream
   seoTitle,
+=======
+  sidebar,
+>>>>>>> Stashed changes
   children,
   prependToc,
 }: Props) {
@@ -49,14 +66,13 @@ export function BasePage({
     tx.setStatus('ok');
   }
 
-  const {title, excerpt, description} = pageContext;
+  const {title} = pageContext;
   const hasToc = !pageContext.notoc;
 
   const [contentElement, setContentElement] = useState<HTMLElement | null>(null);
 
-  const pageDescription = description || (excerpt ? excerpt.slice(0, 160) : '');
-
   return (
+<<<<<<< Updated upstream
     <Fragment>
       <SEO
         title={seoTitle || title}
@@ -64,6 +80,11 @@ export function BasePage({
         noindex={pageContext.noindex}
       />
 
+=======
+    // @ts-expect-error TODO(epurkhiser): Understand why these types are
+    // totally different
+    <Layout {...{sidebar, pageContext}}>
+>>>>>>> Stashed changes
       <div className="row">
         <div
           className={

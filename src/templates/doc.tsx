@@ -12,6 +12,8 @@ export default function Doc(props: any) {
   );
 }
 
+export {BaseHead as Head} from '~src/components/head';
+
 export const pageQuery = graphql`
   query DocQuery($id: String) {
     file(id: {eq: $id}) {
