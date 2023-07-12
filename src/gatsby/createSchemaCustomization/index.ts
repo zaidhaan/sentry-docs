@@ -2,8 +2,10 @@ import {GatsbyNode} from 'gatsby';
 
 import {getApiTypeDefs} from './apiSchema';
 import {getAppTypeDefs} from './appSchema';
+import {getAwsLambdaLayerTypeDefs} from './awsLambdaLayerSchema';
 import {getPackageTypeDefs} from './packageSchema';
 import {getPlatformTypeDefs} from './platformSchema';
+import {getRelayMetricTypeDefs} from './relayMetricSchema';
 
 // TODO(dcramer): move frontmatter out of ApiEndpoint and into Frontmatter
 const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
@@ -13,39 +15,40 @@ const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
   const {createTypes} = actions;
   const typeDefs = [
     `
-    type PageContext {
-      title: String
-      description: String
-      keywords: [String!]
-      draft: Boolean
-      redirect_from: [String!]
-      noindex: Boolean
-      sidebar_title: String
-      sidebar_order: Int
+      type PageContext {
+        title: String
+        description: String
+        keywords: [String!]
+        draft: Boolean
+        redirect_from: [String!]
+        noindex: Boolean
+        sidebar_title: String
+        sidebar_order: Int
 
-      platform: PlatformContext
-      guide: GuideContext
-    }
+        platform: PlatformContext
+        guide: GuideContext
+      }
 
-    type PlatformContext {
-      name: String!
-      title: String!
-    }
+      type PlatformContext {
+        name: String!
+        title: String!
+      }
 
-    type GuideContext {
-      name: String!
-      title: String!
-    }
+      type GuideContext {
+        name: String!
+        title: String!
+      }
 
-    type SitePage implements Node {
-      context: PageContext
-    }
+      type SitePage implements Node  {
+        context: PageContext
+      }
 
-    type MarkdownRemark implements Node {
-      frontmatter: Frontmatter
-      fields: Fields
-    }
+      type MarkdownRemark implements Node  {
+        frontmatter: Frontmatter
+        fields: Fields
+      }
 
+<<<<<<< Updated upstream
     type Mdx implements Node
       @childOf(types: ["File"], mimeTypes: ["text/markdown", "text/x-markdown"]) {
       frontmatter: Frontmatter
@@ -61,6 +64,23 @@ const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
       path: String
       additional_properties: Boolean
     }
+=======
+      type Mdx implements Node
+        @childOf(types: ["File"], mimeTypes: ["text/markdown", "text/x-markdown"]) {
+        frontmatter: Frontmatter
+        fields: Fields
+      }
+
+      type Fields {
+        slug: String!
+        legacy: Boolean
+      }
+
+      type PiiFieldPath implements Node {
+        path: String
+        additional_properties: Boolean
+      }
+>>>>>>> Stashed changes
     `,
     schema.buildObjectType({
       name: 'Frontmatter',
@@ -117,6 +137,9 @@ const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
         name: {
           type: 'String',
         },
+        notoc: {
+          type: 'String',
+        },
       },
     }),
   ];
@@ -126,6 +149,8 @@ const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] = ({
     ...getPlatformTypeDefs(),
     ...getPackageTypeDefs(),
     ...getAppTypeDefs(),
+    ...getAwsLambdaLayerTypeDefs(),
+    ...getRelayMetricTypeDefs(),
   ]);
 };
 
