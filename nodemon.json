@@ -1,0 +1,6 @@
+{
+  "watch": ["/Users/schew/code/sentry/tests/apidocs/openapi-derefed.json"],
+  "events": {
+    "restart": "curl -X POST http://localhost:3000/__refresh"
+  }
+}
