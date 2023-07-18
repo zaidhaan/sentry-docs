@@ -18,7 +18,7 @@ composer require sentry/sdk
 To capture all errors, even the one during the startup of your application, you should initialize the Sentry PHP SDK as soon as possible.
 
 ```php
-\Sentry\init(['dsn' => '___PUBLIC_DSN___' ]);
+/\Sentry/\init(['dsn' => '___PUBLIC_DSN___' ]);
 ```
 
 ## Usage
@@ -28,11 +28,11 @@ In PHP you can either capture a caught exception or capture the last error with 
 ```php
 try {
     $this->functionFailsForSure();
-} catch (\Throwable $exception) {
-    \Sentry\captureException($exception);
+} catch (/\Throwable $exception) {
+    /\Sentry/\captureException($exception);
 }
 
 // OR
 
-\Sentry\captureLastError();
+/\Sentry/\captureLastError();
 ```
