@@ -8,7 +8,7 @@ export const createApiGuides = async ({actions, graphql, reporter}: CreatePageAr
   const data = await getDataOrPanic(
     `
       query {
-        allFile(filter: {absolutePath: {}, relativePath: {in: ["guides/index.mdx", "guides/create-auth-token.mdx", "guides/teams-tutorial.mdx"]}, dir: {regex: "/api/"}}) {
+        allFile(filter: {absolutePath: {}, relativePath: {in: ["guides/index.mdx", "guides/create-auth-token.mdx", "guides/teams-tutorial.mdx", "guides/projects-guide.mdx"]}, dir: {regex: "/api/"}}) {
           nodes {
             id
             childMarkdownRemark {
