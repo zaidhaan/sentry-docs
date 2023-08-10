@@ -3,11 +3,17 @@ title: "Guide: Create and Configure a Project with the Sentry API"
 sidebar_order: 8
 ---
 
-This guide provides a high-level overview of how to use Sentry's API to create a new project and configure advanced settings on that project. It assumes a intermediate level of familiarity with Sentry and Sentry's APIs.
+The Sentry Projects APIs allow you to create and configure Sentry projects.
 
-For a beginner-friendly tutorial, check out the [Create and List Teams with the Sentry API](/api/guides/teams-tutorial/) tutorial.
+<Note>
 
-Endpoints used in this guide:
+Not all projects settings available in the UI are configurable via the Sentry API.
+
+</Note>
+
+This guide gives an overview of how to configure the most commonly used project settings with the Sentry API. It assumes a intermediate level of familiarity with Sentry and the Sentry API. For a beginner-friendly tutorial, check out the [Create and List Teams with the Sentry API](/api/guides/teams-tutorial/) tutorial.
+
+This guide will cover the following endpoints:
 
 - [Create a New Project](/api/projects/create-a-new-project/)
 - [Update an Inbound Data Filter](/api/projects/update-an-inbound-data-filter/)
@@ -21,31 +27,22 @@ Endpoints used in this guide:
 
   > If you don't have an authentication token, follow the [Create a Sentry Authentication Token](/api/guides/create-auth-token) tutorial to create an organization auth token.
 
-We recommend using a free [Sentry developer account](https://sentry.io/pricing/) for this tutorial.
+## Create a New Project
 
-## Create a Project
+To create a new project, send a POST request to the [`/projects` endpoint](/api/projects/create-a-new-project/) with a scope of `project:write` or higher.
 
-To programmatically create a new project in Sentry, use the [Create a New Project](/api/projects/create-a-new-project/) endpoint.
+The `default_rules` body parameter specifies whether the default alert rule (users are notified for every new issue) should be turned on for the project. Today, other than this setting, alert rules can only be modified or created through the Sentry UI.
 
-### Auth scope
-
-This endpoint requires an auth token with a scope of `project:write` or higher.
-
-### Required parameters
-
-As with most Project APIs, you must specify the `organization_slug` and `team_slug` for an existing organization and team to add the project to to as path parameters in the API call. You must also specify the project name, `name`, as a query parameter.
-
-### Other parameters
-
-If you don't specify a `platform`, the default platform is JavaScript. The `default_rules` param specifies whether the default alert rule (users are notified for every new issue) should be turned on for the project. Today, other than this setting, alert rules can only be modified or created through the Sentry UI.
+### Example
 
 Here's an example cURL call that shows creating a new project with the following parameters:
 
 - Path Parameters
+
   - `organization_slug`: `test-org`
   - `team_slug`: `test-team`
 
-- Query Parameters
+- Body Parameters
   - `name`: `proj-name`
   - `platform`:
   - `default_rules=false` =
