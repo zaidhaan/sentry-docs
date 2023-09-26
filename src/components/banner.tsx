@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 // This is a lazy way of doing things but will work until
 // we put a more robust solution in place.
 //
-const SHOW_BANNER = true;
+const SHOW_BANNER = false;
 const BANNER_TEXT =
   '[Workshop] How to detect, fix and prevent ANRs. Join us live. Sept 27 | 10 AM PT.';
 const BANNER_LINK_URL =
