@@ -20,6 +20,7 @@ CREATE TABLE "Changelog" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "title" VARCHAR(255) NOT NULL,
     "slug" VARCHAR(255) NOT NULL,
+    "image" TEXT,
     "content" TEXT,
     "summary" TEXT,
     "published" BOOLEAN NOT NULL DEFAULT false,

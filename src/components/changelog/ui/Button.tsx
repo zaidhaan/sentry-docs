@@ -23,7 +23,7 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
     };
 
     const sizes = {
-      sm: 'px-3 py-1.5 text-sm',
+      sm: 'px-1.5 py-1.5 text-sm',
       default: 'px-4 py-2',
       md: 'px-5 py-3',
       lg: 'px-6 py-3.5',
@@ -33,7 +33,11 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, Props>(
     if (as === 'a') {
       return (
         <Link
-          className="duration-150 rounded-lg active:shadow-lg disabled:cursor-not-allowed inline-flex items-center"
+          className={`${variants[variant]} ${
+            sizes[size]
+          } duration-150 rounded-lg active:shadow-lg disabled:cursor-not-allowed inline-flex items-center ${
+            className ?? ''
+          }`}
           {...(props as AnchorProps)}
           ref={ref as Ref<HTMLAnchorElement>}
         />

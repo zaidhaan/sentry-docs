@@ -35,6 +35,7 @@ async function main() {
           createdAt: new Date(post.date).toISOString(),
           title: post.title,
           summary: post.summary,
+          image: post.image,
           slug: post.slug,
           content: mdx.matter.content,
           published: true,

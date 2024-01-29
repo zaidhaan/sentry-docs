@@ -1,12 +1,9 @@
-import {Sidebar} from 'sentry-docs/components/changelog/Sidebar';
+import {type ReactNode} from 'react';
 
-export default function Layout({children}: {children: React.ReactNode}) {
+export default function Layout({children}: {children: ReactNode}) {
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 px-4 pb-2 pt-16 lg:pt-2 min-h-screen w-screen flex flex-col">
-        {children}
-      </main>
+    <div className="relative min-h-[calc(100vh-8rem)] w-full mx-auto grid grid-cols-12 bg-gray-200 pt-16">
+      {children}
     </div>
   );
 }
