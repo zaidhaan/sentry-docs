@@ -30,6 +30,7 @@ const PlainTextCodeEditorDescriptor: CodeBlockEditorDescriptor = {
   // The Editor is a React component
   Editor: props => {
     const cb = useCodeBlockEditorContext();
+
     // stops the proppagation so that the parent lexical editor does not handle certain events.
     return (
       <div onKeyDown={e => e.nativeEvent.stopImmediatePropagation()}>

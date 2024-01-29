@@ -238,7 +238,11 @@ export async function getFileBySlug(slug) {
     );
 
     const toc = [];
-    const {code, frontmatter} = await Sentry.startSpan({name: 'bundleMDX'}, async () => {
+    const {
+      code,
+      frontmatter,
+      matter: content,
+    } = await Sentry.startSpan({name: 'bundleMDX'}, async () => {
       return bundleMDX({
         source,
         // mdx imports can be automatically source from the components directory
@@ -319,6 +323,7 @@ export async function getFileBySlug(slug) {
     }
 
     return {
+      matter: content,
       mdxSource: code,
       toc,
       frontMatter: {

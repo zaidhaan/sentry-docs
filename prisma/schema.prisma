@@ -20,26 +20,25 @@ model User {
   changelogs        Changelog[]
 }
 
-model Category {
-  id          String      @id @default(cuid())
-  name        String      @unique @db.VarChar(255)
-  slug        String      @unique @db.VarChar(255)
-  description String?
-  deleted     Boolean     @default(false)
-  changelogs  Changelog[]
+model Changelog {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  publishedAt DateTime?  @default(now())
+  updatedAt   DateTime   @updatedAt
+  title       String     @db.VarChar(255)
+  slug        String     @unique @db.VarChar(255)
+  content     String?
+  summary     String?
+  published   Boolean    @default(false)
+  deleted     Boolean    @default(false)
+  authorId    String?
+  author      User?      @relation(fields: [authorId], references: [id])
+  categories  Category[]
 }
 
-model Changelog {
-  id          String    @id @default(cuid())
-  createdAt   DateTime  @default(now())
-  publishedAt DateTime? @default(now())
-  updatedAt   DateTime  @updatedAt
-  title       String    @db.VarChar(255)
-  content     String?
-  published   Boolean   @default(false)
-  deleted     Boolean   @default(false)
-  authorId    String
-  categoryId  String
-  author      User      @relation(fields: [authorId], references: [id])
-  category    Category  @relation(fields: [categoryId], references: [id])
+model Category {
+  id         String      @id @default(cuid())
+  name       String      @unique @db.VarChar(255)
+  deleted    Boolean     @default(false)
+  changelogs Changelog[]
 }
