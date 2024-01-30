@@ -3,7 +3,6 @@ import Link from 'next/link';
 
 import {editChangelog} from 'sentry-docs/actions/changelog';
 import {Button} from 'sentry-docs/components/changelog/ui/Button';
-import {Heading} from 'sentry-docs/components/changelog/ui/Heading';
 import {Input} from 'sentry-docs/components/changelog/ui/Input';
 import {Select} from 'sentry-docs/components/changelog/ui/Select';
 import {prisma} from 'sentry-docs/prisma';

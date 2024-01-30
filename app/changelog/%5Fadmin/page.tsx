@@ -16,12 +16,16 @@ export default async function ChangelogsListPage() {
 
   return (
     <Fragment>
-      <header className="col-start-1 col-span-2 mb-4">
-        <Button as="a" href="/changelog/admin/changelogs/create" className="font-medium">
+      <header className="mb-4 col-start-10 col-span-1 text-right">
+        <Button
+          as="a"
+          href="/changelog/admin/changelogs/create"
+          className="font-medium"
+          size="sm"
+        >
           New Changelog
         </Button>
       </header>
-
       <section className="overflow-x-auto col-start-3 col-span-8 shadow-md rounded-lg">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">

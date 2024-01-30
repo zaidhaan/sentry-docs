@@ -1,7 +1,6 @@
 import {Fragment} from 'react';
 import Link from 'next/link';
 
-import {Heading} from 'sentry-docs/components/changelog/ui/Heading';
 import {prisma} from 'sentry-docs/prisma';
 
 export default async function ChangelogPage({params}: {params: {id: string}}) {
@@ -13,7 +12,7 @@ export default async function ChangelogPage({params}: {params: {id: string}}) {
     return (
       <Fragment>
         <header>
-          <Heading>Changelog not found</Heading>
+          <h1>Changelog not found</h1>
         </header>
         <footer>
           <Link href="/changelogs">Return to Changelogs list</Link>
@@ -25,7 +24,7 @@ export default async function ChangelogPage({params}: {params: {id: string}}) {
   return (
     <Fragment>
       <header className="mt-2 mb-4">
-        <Heading>Changelog #{changelog.id.substring(0, 6)}...</Heading>
+        <h1>Changelog #{changelog.id.substring(0, 6)}...</h1>
       </header>
 
       <section className="relative overflow-hidden rounded-lg border border-gray-200 p-4 sm:p-6 lg:p-8 max-w-xl mb-4">
