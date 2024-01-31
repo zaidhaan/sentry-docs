@@ -14,8 +14,8 @@ async function main() {
     if (Array.isArray(post.tags)) {
       for (const tag of post.tags) {
         categoriesArray.push({
-          where: {name: tag},
-          create: {name: tag},
+          where: {name: tag.toUpperCase()},
+          create: {name: tag.toUpperCase()},
         });
       }
       if (categoriesArray.length > 0) {

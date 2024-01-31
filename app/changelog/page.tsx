@@ -4,7 +4,9 @@ import type {Metadata} from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import Article from 'sentry-docs/components/changelog/article';
 import List from 'sentry-docs/components/changelog/list';
+import Months from 'sentry-docs/components/changelog/months';
 import Pagination from 'sentry-docs/components/changelog/pagination';
 import Search from 'sentry-docs/components/changelog/search';
 import Tags from 'sentry-docs/components/changelog/tags';
@@ -16,36 +18,72 @@ export default async function ChangelogList({
   searchParams,
 }: {
   searchParams?: {
+    before?: string;
     page?: string;
     query?: string;
+    tags?: string;
   };
 }) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
+  const selectedCategories = searchParams?.tags?.split(',') || [];
+  const before = searchParams?.before || '';
 
-  const matchingCategories = await prisma.category.findMany({
-    where: {
+  const categoryOR: any = [];
+  if (selectedCategories.length) {
+    categoryOR.push({
+      name: {
+        in: selectedCategories,
+      },
+    });
+  }
+  if (query) {
+    categoryOR.push({
       name: {
         contains: query,
       },
+    });
+  }
+
+  const matchingCategories = await prisma.category.findMany({
+    where: {
+      OR: categoryOR,
     },
   });
   const matchingCategoryIds = matchingCategories.map(category => category.id);
-  const totalCount = await prisma.changelog.count();
+
+  const changelogOR: any = [];
+  if (selectedCategories.length) {
+    changelogOR.push({categories: {some: {id: {in: matchingCategoryIds}}}});
+  }
+  if (query) {
+    changelogOR.push({title: {contains: query}});
+    changelogOR.push({summary: {contains: query}});
+    changelogOR.push({content: {contains: query}});
+  }
+
+  const where: any = {
+    published: true,
+  };
+  if (before) {
+    const date = new Date(Date.parse(`${before}`));
+    date.setMonth(date.getMonth() + 1);
+    date.setDate(0);
+    where.publishedAt = {
+      lte: date,
+    };
+  }
+  if (changelogOR.length) {
+    where.OR = changelogOR;
+  }
+
+  const totalCount = await prisma.changelog.count({where});
   const categories = await prisma.category.findMany();
   const changelogs = await prisma.changelog.findMany({
     include: {
       categories: true,
     },
-    where: {
-      published: true,
-      OR: [
-        {title: {contains: query}},
-        {summary: {contains: query}},
-        {content: {contains: query}},
-        {categories: {some: {id: {in: matchingCategoryIds}}}},
-      ],
-    },
+    where,
     orderBy: {
       publishedAt: 'desc',
     },
@@ -53,18 +91,29 @@ export default async function ChangelogList({
     take: 10,
   });
 
-  // iterate over all posts and create a list of months & years
-  const months = changelogs.reduce((allMonths: any, post: any) => {
-    const date = post.publishedAt as Date;
-    const year = date.getFullYear();
-    const month = date.toLocaleString('default', {
-      month: 'long',
-    });
-    const monthYear = `${month} ${year}`;
-    return [...new Set([...allMonths, monthYear])];
-  }, []);
+  const reduceMoths = (changelog: any) => {
+    return changelog.reduce((allMonths: any, post: any) => {
+      const date = post.publishedAt as Date;
+      const year = date.getFullYear();
+      const month = date.toLocaleString('default', {
+        month: 'long',
+      });
+      const monthYear = `${month} ${year}`;
+      return [...new Set([...allMonths, monthYear])];
+    }, []);
+  };
 
-  const monthsCopy = [...months];
+  // iterate over all posts and create a list of months & years
+  const months = reduceMoths(changelogs);
+
+  const allMonths = reduceMoths(
+    await prisma.changelog.findMany({
+      select: {publishedAt: true},
+      orderBy: {
+        publishedAt: 'desc',
+      },
+    })
+  );
 
   const pagination = {
     currentPage,
@@ -98,7 +147,9 @@ export default async function ChangelogList({
         <div className="hidden md:block md:col-span-2 pl-5 pt-10">
           <h3 className="text-2xl text-primary font-semibold mb-2">Categories:</h3>
           <div className="flex flex-wrap gap-1 py-1">
-            <Tags categories={categories} />
+            <Suspense key={query + searchParams}>
+              <Tags categories={categories} />
+            </Suspense>
           </div>
         </div>
         <div className="col-span-12 md:col-span-8">
@@ -113,50 +164,35 @@ export default async function ChangelogList({
             </div>
 
             <Suspense
-              key={
-                query + searchParams + months
-              } /* fallback={<InvoicesTableSkeleton />} */
+              fallback={
+                <Fragment>
+                  <Article loading />
+                </Fragment>
+              }
+              key={query + searchParams + months + pagination}
             >
-              <List changelogs={changelogs} months={months} />
+              <List changelogs={changelogs} />
+              {pagination && pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                />
+              )}
             </Suspense>
-            {/* {!filteredBlogPosts.length && (
+
+            {!changelogs.length && (
               <div className="flex items-center my-4">
                 <div className="flex-1 border-t-[1px] border-gray-400" />
                 <span className="px-3 text-gray-500">No posts found.</span>
                 <div className="flex-1 border-t-[1px] border-gray-400" />
               </div>
-            )} */}
-
-            {/* {pagination && pagination.totalPages > 1 && !searchValue && (
-              <Pagination
-                currentPage={pagination.currentPage}
-                totalPages={pagination.totalPages}
-              />
-            )} */}
+            )}
           </div>
         </div>
         <div className="hidden md:block md:col-span-2 pl-5 pt-10">
-          <h3 className="text-1xl text-primary font-semibold mb-2">Jump to:</h3>
-          <ul>
-            {/* {monthsCopy.map((month, index) => (
-              <li key={index}>
-                <a
-                  className={`text-primary hover:text-purple-900 hover:font-extrabold ${selectedMonth === month ? 'underline' : ''}`}
-                  href={`#${month}`}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (selectedMonth === month) {
-                      setSelectedMonth(null);
-                    } else {
-                      setSelectedMonth(month);
-                    }
-                  }}
-                >
-                  {month}
-                </a>
-              </li>
-            ))} */}
-          </ul>
+          <Suspense key={query + searchParams}>
+            <Months months={allMonths} />
+          </Suspense>
         </div>
       </div>
     </Fragment>
