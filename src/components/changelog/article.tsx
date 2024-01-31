@@ -5,13 +5,13 @@ import Date from './date';
 import Tag from './tag';
 
 type ArticleProps = {
-  date: string;
+  date: string | Date | null;
   slug: string;
   tags: string[];
   title: string;
   children?: ReactNode;
   className?: string;
-  image?: string;
+  image?: string | null;
 };
 
 export default function Article({
