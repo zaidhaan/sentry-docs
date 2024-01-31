@@ -1,36 +1,23 @@
 'use client';
-import {Fragment, useEffect, useState} from 'react';
-import {type Category} from '@prisma/client';
-import {
-  ReadonlyURLSearchParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import {Fragment} from 'react';
+import {ReadonlyURLSearchParams, usePathname, useSearchParams} from 'next/navigation';
 
 export default function Tags({months}: {months: any}) {
   const pathname = usePathname();
-  const {replace} = useRouter();
   const searchParams = useSearchParams() as ReadonlyURLSearchParams;
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    const month = params.get('before')?.toString() || '';
-    setSelectedMonth(month);
-  }, [searchParams]);
+  const params = new URLSearchParams(searchParams);
+  const before = searchParams.get('before') || '';
 
-  const handleClick = (pickedMonth: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
-    if (pickedMonth === selectedMonth) {
-      setSelectedMonth('');
+  const createPageURL = (month: string) => {
+    if (month === before) {
       params.delete('before');
     } else {
-      setSelectedMonth(pickedMonth);
-      params.set('before', pickedMonth);
+      params.set('before', month);
     }
-    replace(`${pathname}?${params.toString()}`);
+    params.set('page', '1');
+
+    return `${pathname}?${params.toString()}`;
   };
 
   return (
@@ -40,8 +27,8 @@ export default function Tags({months}: {months: any}) {
         {months.map((month, index) => (
           <li key={index}>
             <a
-              className={`text-primary hover:text-purple-900 hover:font-extrabold ${selectedMonth === month ? 'underline' : ''}`}
-              onClick={() => handleClick(month)}
+              className={`text-primary hover:text-purple-900 hover:font-extrabold ${before === month ? 'underline' : ''}`}
+              href={createPageURL(month)}
             >
               {month}
             </a>
