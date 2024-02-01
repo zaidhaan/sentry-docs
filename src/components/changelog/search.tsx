@@ -1,5 +1,6 @@
 'use client';
 
+import {MagnifyingGlassIcon} from '@radix-ui/react-icons';
 import {
   ReadonlyURLSearchParams,
   usePathname,
@@ -30,15 +31,18 @@ export default function Search({placeholder}: {placeholder: string}) {
   }
 
   return (
-    <input
-      aria-label={placeholder}
-      type="text"
-      placeholder={placeholder}
-      defaultValue={searchParams.get('query')?.toString()}
-      className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
-      onChange={e => {
-        handleSearch(e.target.value);
-      }}
-    />
+    <div className="relative w-full">
+      <MagnifyingGlassIcon className="absolute w-5 h-5 text-gray-400 left-3 top-3" />
+      <input
+        aria-label={placeholder}
+        type="text"
+        placeholder={placeholder}
+        defaultValue={searchParams.get('query')?.toString()}
+        className="w-full rounded-md border border-gray-300 bg-white px-4 py-2 pl-10 text-gray-900 focus:border-primary-500 focus:ring-primary-500"
+        onChange={e => {
+          handleSearch(e.target.value);
+        }}
+      />
+    </div>
   );
 }
