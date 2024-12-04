@@ -195,18 +195,14 @@ captureException(new Error("oh no!"), (scope) => {
 
 ## SDK Version Alignment
 
-Since version 8 of the Sentry JavaScript SDKs, multiple SDKs on the same page will [only interact with each other](https://github.com/getsentry/sentry-javascript/pull/12206) if they're aligned to the same version.
-This was done with the objective to prevent cross-SDK interactions in unwanted scenarios, like browser extensions or 3rd party scripts using Sentry and
-interfering with SDKs on the same page.
+Starting with version 8, if you have multiple Sentry JavaScript SDKs on the same page, they will [only interact with each other](https://github.com/getsentry/sentry-javascript/pull/12206) if they're all using the same version. This prevents unwanted cross-SDK interactions, for example, from browser extensions or 3rd party scripts.
 
-However, for micro frontends, where you specifically _want_ SDK interaction between multiple SDKs, you need to ensure that all SDKs are aligned to the same version.
+However, for micro frontends, where you _want_ SDK interaction between multiple SDKs, you'll need to ensure that all SDKs are using the same version.
 
-An example where version alignment is important is when you initialize the SDK once in a host or skeleton application but use Sentry SDK calls in micro frontend child applications.
-For example, if your individual micro frontends call `Sentry.captureException`.
+Version alignment is important when you initialize the SDK in a host or skeleton application, but use Sentry SDK calls in micro frontend child applications. For example, if your individual micro frontends call `Sentry.captureException`.
 
 <Note>
 
-If you cannot guarantee version alignment, you can [follow this workaround](https://github.com/getsentry/sentry-javascript/discussions/10576#discussioncomment-11446422).
-In this case, we cannot guarantee perfect interoperability between SDKs, meaning you might run into unexpected behavior.
+If you can't get all your SDKs to use the same version, you can [follow this workaround](https://github.com/getsentry/sentry-javascript/discussions/10576#discussioncomment-11446422), but interoperability isn't guaranteed and you could run into some unexpected behavior.
 
 </Note>
